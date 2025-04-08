@@ -4,7 +4,7 @@ const username = location.port;
 
 let displayName = prompt("Enter your username:");
 
-function sendMessage() {
+/*function sendMessage() {
     const input = document.getElementById("message");
     const message = `${username}: ${input.value}`;
     ws.send(message);
@@ -19,10 +19,11 @@ async function sendMessage(text) {
     'verified': true
   });
   updateMessageBox();
-}
+}*/
 
 async function sendMessage(text) {
-    const recipient = username === '3000' ? '3001' : '3000';
+    const recipient = currentConvo;
+
     const message = {
         'from': username, 'to': recipient,
         'text': text
@@ -80,12 +81,15 @@ function updateMessageBox(user=null) {
         if (newBlock) {
             if (prev !== null)
                 newHTML += '</div>';
-            newHTML += `<div class="message-group ${message.from === displayName ? 'me' : ''}">`;
+            newHTML += `<div class="message-group ${message.from === username ? 'me' : 'them'}">`;
+
         }
+        const showSender = message.from !== username;
         const messageHTML = `<div class="message">`
+            + (showSender ? `<strong>${message.from}:</strong> ` : '')
             + message.text
-            + `${message.verified ? '' : ' : ' + displayName}`
             + '</div>';
+
         newHTML += messageHTML;
         prev = message.from;
     });
@@ -127,17 +131,17 @@ function addContact() {
     const user = prompt("Enter username of new contact:", "");
     if (user === "") return;
     connectUser(user);
-}
+}*/
 
 function typeText(event) {
-    let key = event.keyCode;
+    let key = event.keyCode || event.which;
     if (key === 13 && inputBox.value !== '') {
         event.preventDefault();
         inputBox.placeholder = '';
         sendMessage(inputBox.value);
         inputBox.value = '';
     }
-}*/
+}
 inputBox.addEventListener('keydown', typeText);
 
 
