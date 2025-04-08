@@ -144,6 +144,13 @@ function typeText(event) {
 }
 inputBox.addEventListener('keydown', typeText);
 
+//----------------------
+//Eventual Auto Correct Function
+
+
+//----------------------------
+//Possible Color Shifting Function
+
 
 updateMessageBox();
 updateContactsBox();
