@@ -1,89 +1,64 @@
-const websocket = new WebSocket("ws://localhost:8000/");
+window.onload = () => {
+    const websocket = new WebSocket("ws://localhost:8000/");
 
-const username = location.port;
+const username = prompt("Enter your username:");
+const messages = [];
 
-let displayName = prompt("Enter your username:");
+const messageBox = document.getElementById('message-box');
+const inputBox = document.getElementById("input-box");
 
-/*function sendMessage() {
-    const input = document.getElementById("message");
-    const message = `${username}: ${input.value}`;
-    ws.send(message);
-    input.value = "";
-}
-
-async function sendMessage(text) {
-  const recipient = username === '3000' ? '3001' : '3000';
-  messages.push({
-    'from': username, 'to': recipient,
-    'text': text,
-    'verified': true
-  });
-  updateMessageBox();
-}*/
-
-async function sendMessage(text) {
-    const recipient = currentConvo;
-
+function sendMessage(text) {
     const message = {
-        'from': username, 'to': recipient,
-        'text': text
+        from: username,
+        text: text
     };
+
     messages.push({
-        'from': username, 'to': recipient,
-        'text': text,
-        'verified': true
+        from: username,
+        text: text,
+        verified: true
     });
+
     websocket.send(JSON.stringify({
-        'type': 'msg', ...message
+        type: 'msg',
+        ...message
     }));
+
     updateMessageBox();
 }
 
-async function receiveData({data}) {
+function receiveData({ data }) {
     const event = JSON.parse(data);
+
     switch (event.type) {
         case 'msg':
-            if (event.to === username) {
-              messages.push({
-                  'from': event.from, 'to': event.to,
-                  'text': event.text
-              });
-              updateMessageBox();
-            }
+            messages.push({
+                from: event.from,
+                text: event.text
+            });
+            updateMessageBox();
             break;
         default:
             break;
     }
 }
+
 websocket.addEventListener("message", receiveData);
 
-const messageBox = document.getElementById('message-box');
-const inputBox = document.getElementById("input-box");
-const contactsBox = document.getElementById('contacts-box');
-const messages = [];
-const users = {};
-let currentConvo = '';
-
-function updateMessageBox(user=null) {
-    // update the message box to show all messages that have been sent and received between us and user
-    const fmessages = messages.filter((message) => (user === null
-        || (message.from === username && message.to === user)
-        || (message.from === user && message.to === username)));
-    if (fmessages.length === 0) {
-        inputBox.placeholder = "Enter a message here...";
-        messageBox.innerHTML = '';
-        return;
-    }
+function updateMessageBox() {
     let prev = null;
     let newHTML = '';
-    fmessages.forEach((message) => {
+
+    messages.forEach((message) => {
         const newBlock = prev !== message.from;
+
         if (newBlock) {
             if (prev !== null)
                 newHTML += '</div>';
-            newHTML += `<div class="message-group ${message.from === username ? 'me' : 'them'}">`;
 
+            newHTML += `<div class="message-group ${message.from === username ? 'me' : 'them'}">`;
         }
+
         const showSender = message.from !== username;
         const messageHTML = `<div class="message">`
             + (showSender ? `<strong>${message.from}:</strong> ` : '')
@@ -93,45 +68,11 @@ function updateMessageBox(user=null) {
         newHTML += messageHTML;
         prev = message.from;
     });
+
     newHTML += '</div>';
     messageBox.innerHTML = newHTML;
     messageBox.scrollTop = messageBox.scrollHeight;
 }
-
-
-
-
-
-
-/*const setConvo = (user) => {
-    currentConvo = user;
-    updateMessageBox(user);
-    updateContactsBox();
-}
-function displayUsername() {
-    document.getElementById("username").innerText = username;
-}*/
-
-function updateContactsBox() {
-    if (contactsBox === null)
-        return;
-    let newHTML = '';
-    for (const [key, val] of Object.entries(users)) {
-        if (key !== username)
-            newHTML +=
-                `<span class="contact ${key === currentConvo ? 'active':''}" onClick="setConvo('${key}')">`
-                + key
-                + '</span>';
-    }
-    newHTML += '<span class="contact" onclick="addContact()">+</span>';
-    contactsBox.innerHTML = newHTML;
-}
-/*
-function addContact() {
-    const user = prompt("Enter username of new contact:", "");
-    if (user === "") return;
-    connectUser(user);
-}*/
 
 function typeText(event) {
     let key = event.keyCode || event.which;
@@ -142,15 +83,14 @@ function typeText(event) {
         inputBox.value = '';
     }
 }
+
+// ---------------- Autocorrect -----------------------//
+
+ function autoCorrect(){
+    
+ }
+
 inputBox.addEventListener('keydown', typeText);
 
-//----------------------
-//Eventual Auto Correct Function
-
-
-//----------------------------
-//Possible Color Shifting Function
-
-
 updateMessageBox();
-updateContactsBox();
+}
