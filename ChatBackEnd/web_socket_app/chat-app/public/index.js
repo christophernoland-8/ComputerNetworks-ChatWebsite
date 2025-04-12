@@ -8,14 +8,17 @@ const messageBox = document.getElementById('message-box');
 const inputBox = document.getElementById("input-box");
 
 function sendMessage(text) {
+
+    const correctedText = autoCorrect(text); // <--- Apply autocorrection
+
     const message = {
         from: username,
-        text: text
+        text: correctedText
     };
 
     messages.push({
         from: username,
-        text: text,
+        text: correctedText,
         verified: true
     });
 
@@ -84,11 +87,44 @@ function typeText(event) {
     }
 }
 
-// ---------------- Autocorrect -----------------------//
+// -------------- Autocorrect ---------------------//
 
- function autoCorrect(){
-    
- }
+function autoCorrect(text) {
+    const corrections = {
+        'teh': 'the',
+        'recieve': 'receive',
+        'definately': 'definitely',
+        'occured': 'occurred',
+        'adress': 'address',
+        'wich': 'which',
+        'dont': "don't",
+        'im': "I'm",
+        'idk': "I don't know",
+        'u': 'you',
+        'henlo': 'hello'
+    };
+
+    // Escape HTML special characters
+    function escapeHTML(str) {
+        return str.replace(/&/g, "&amp;")
+                  .replace(/</g, "&lt;")
+                  .replace(/>/g, "&gt;");
+    }
+
+    return text.split(/\b/).map(part => {
+        const lower = part.toLowerCase();
+        const corrected = corrections[lower];
+
+        if (corrected) {
+            // Capitalize if the original word was capitalized
+            return part[0] === part[0].toUpperCase()
+                ? corrected.charAt(0).toUpperCase() + corrected.slice(1)
+                : corrected;
+        }
+
+        return escapeHTML(part);
+    }).join('');
+}
 
 inputBox.addEventListener('keydown', typeText);
 
