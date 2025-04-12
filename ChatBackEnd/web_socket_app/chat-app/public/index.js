@@ -101,7 +101,9 @@ function autoCorrect(text) {
         'im': "I'm",
         'idk': "I don't know",
         'u': 'you',
-        'henlo': 'hello'
+        'henlo': 'hello',
+        'jeneral': 'general',
+        'kenoshi': 'kenobi'
     };
 
     // Escape HTML special characters
