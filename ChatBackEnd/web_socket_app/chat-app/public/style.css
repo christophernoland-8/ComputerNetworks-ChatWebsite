@@ -1,7 +1,16 @@
+:root {
+    --bg-color: white;
+    --sent-color: #13C;
+    --recv-color: #CCC;
+    --sent-tail-color: #13C;
+    --recv-tail-color: #CCC;
+}
+
 body {
     margin: 20px;
     font-size: 18px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: var(--bg-color);
 }
 #input-container,#message-box,#contacts-box {
     margin: auto;
@@ -47,7 +56,7 @@ body {
     bottom: 5px;
     left: -10px;
     border-width: 12px 15px 0 0;
-    border-color: transparent #CCC;
+    border-color: transparent var(--recv-tail-color);
     border-style: solid;
     display: block;
     width: 0;
@@ -56,18 +65,18 @@ body {
     left: unset;
     right: -10px;
     border-width: 12px 0 0 15px;
-    border-color: transparent #13C;
+    border-color: transparent var(--sent-tail-color);
 }
 #message-box > .message-group > .message {
     border-radius: 14px;
-    background-color: #CCC;
+    background-color: var(--recv-color);
     padding: 5px 10px;
     width: fit-content;
     overflow-wrap: anywhere;
 }
 #message-box > .message-group.me > .message {
     float: right;
-    background-color: #13C;
+    background-color: var(--sent-color);
     color: white;
     align-self: end;
 }
